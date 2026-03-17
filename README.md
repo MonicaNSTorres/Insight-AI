@@ -2,7 +2,7 @@
 Plataforma de Business Intelligence com Inteligência Artificial
 
 <p align="center">
-  <img src="./public/logo.png" width="140" />
+  <img src="./public/icon.png" width="140" />
 </p>
 
 Transforme dados brutos em insights acionáveis com dashboards automáticos e IA

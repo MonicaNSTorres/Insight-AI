@@ -2,16 +2,23 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import Link from "next/link";
-import { Eye, Lock, Mail, PanelLeftClose, User } from "lucide-react";
-import Image from "next/image";
+import {
+  Eye,
+  Lock,
+  Mail,
+  User,
+  FileText,
+  CheckSquare,
+  MessageCircle,
+  Settings,
+} from "lucide-react";
 
 const menuItems = [
-  "Login",
-  "Painel",
-  "Conjuntos de Dados",
-  "Insights",
-  "Chat",
-  "Configurações",
+  { label: "Painel", icon: FileText },
+  { label: "Conjuntos de Dados", icon: CheckSquare },
+  { label: "Insights", icon: CheckSquare },
+  { label: "Chat", icon: MessageCircle },
+  { label: "Configurações", icon: Settings },
 ];
 
 export default function RegisterPage() {
@@ -19,113 +26,100 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState("");
   const [isPending, startTransition] = useTransition();
 
-async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-  event.preventDefault();
-  setError("");
-  setSuccess("");
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setSuccess("");
 
-  const form = event.currentTarget;
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-  const formData = new FormData(form);
+    const payload = {
+      name: String(formData.get("name") || ""),
+      email: String(formData.get("email") || ""),
+      password: String(formData.get("password") || ""),
+    };
 
-  const payload = {
-    name: String(formData.get("name") || ""),
-    email: String(formData.get("email") || ""),
-    password: String(formData.get("password") || ""),
-  };
+    startTransition(async () => {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-  startTransition(async () => {
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data?.message || "Não foi possível criar a conta.");
+        return;
+      }
+
+      setSuccess("Conta criada com sucesso. Agora faça login.");
+      form.reset();
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setError(data?.message || "Não foi possível criar a conta.");
-      return;
-    }
-
-    setSuccess("Conta criada com sucesso. Agora faça login.");
-    form.reset();
-  });
-}
+  }
 
   return (
     <main className="min-h-screen bg-[#eef3fb] px-4 py-8 text-slate-900">
-      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[260px_1fr]">
-        <aside className="overflow-hidden rounded-[26px] bg-[linear-gradient(180deg,#163b7a_0%,#0f2f63_100%)] p-5 text-white shadow-xl">
-          <div className="mb-6 flex items-center justify-between">
-            <div className="rounded-xl bg-white px-3 py-2 text-sm font-semibold">
-              <Image src="/icon.png" alt="logo" width={50} height={60}/>
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[250px_1fr]">
+        <aside className="overflow-hidden rounded-[26px] bg-[linear-gradient(180deg,#173C7C_0%,#102F63_100%)] p-5 text-white shadow-xl">
+          <div className="mb-8 flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10">
+              <CheckSquare size={18} />
             </div>
-            <button className="rounded-lg bg-white/10 p-2">
-              <PanelLeftClose size={16} />
-            </button>
+            <p className="font-semibold">InsightAI</p>
           </div>
 
           <nav className="space-y-2">
-            {menuItems.map((item, index) => (
-              <div
-                key={item}
-                className={`rounded-xl px-3 py-2 text-sm ${
-                  index === 1
-                    ? "bg-blue-500/30 text-white"
-                    : "text-blue-100/90"
-                }`}
-              >
-                {item}
-              </div>
-            ))}
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-blue-100/90"
+                >
+                  <Icon size={15} />
+                  {item.label}
+                </div>
+              );
+            })}
           </nav>
 
-          <div className="mt-10 rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-xs text-blue-100">
-            Privacy
-          </div>
+          <div className="mt-auto pt-10 text-xs text-blue-100/80">Prinecy</div>
         </aside>
 
         <section className="rounded-[26px] border border-slate-200 bg-white p-6 shadow-lg md:p-8">
           <div className="mx-auto max-w-md">
-            <h1 className="text-3xl font-bold text-slate-900">Criar Conta</h1>
+            <h1 className="text-4xl font-bold text-[#27346b]">Criar uma Conta</h1>
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <div>
-                <label
-                  htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-slate-600"
-                >
+                <label className="mb-2 block text-sm font-medium text-slate-600">
                   Nome
                 </label>
 
                 <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4">
                   <User size={18} className="text-slate-400" />
                   <input
-                    id="name"
                     name="name"
                     type="text"
                     required
-                    placeholder="Seu nome"
+                    placeholder="Mônica Silva"
                     className="h-12 w-full bg-transparent px-3 outline-none placeholder:text-slate-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-slate-600"
-                >
-                  E-mail
+                <label className="mb-2 block text-sm font-medium text-slate-600">
+                  Email
                 </label>
 
                 <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4">
                   <Mail size={18} className="text-slate-400" />
                   <input
-                    id="email"
                     name="email"
                     type="email"
                     required
@@ -136,21 +130,33 @@ async function handleSubmit(event: FormEvent<HTMLFormElement>) {
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-slate-600"
-                >
+                <label className="mb-2 block text-sm font-medium text-slate-600">
                   Senha
                 </label>
 
                 <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4">
                   <Lock size={18} className="text-slate-400" />
                   <input
-                    id="password"
                     name="password"
                     type="password"
                     required
                     minLength={6}
+                    placeholder="••••••••"
+                    className="h-12 w-full bg-transparent px-3 outline-none placeholder:text-slate-400"
+                  />
+                  <Eye size={18} className="text-slate-400" />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-600">
+                  Confirmar Senha
+                </label>
+
+                <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4">
+                  <Lock size={18} className="text-slate-400" />
+                  <input
+                    type="password"
                     placeholder="••••••••"
                     className="h-12 w-full bg-transparent px-3 outline-none placeholder:text-slate-400"
                   />
@@ -169,9 +175,9 @@ async function handleSubmit(event: FormEvent<HTMLFormElement>) {
               <button
                 type="submit"
                 disabled={isPending}
-                className="h-12 w-full rounded-xl bg-blue-600 text-sm font-semibold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 w-full rounded-xl bg-blue-600 text-base font-semibold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 disabled:opacity-60"
               >
-                {isPending ? "Cadastrando..." : "Cadastrar"}
+                {isPending ? "Criando..." : "Criar Conta"}
               </button>
             </form>
 

@@ -1,39 +1,147 @@
 import Link from "next/link";
-import { Plus, Search } from "lucide-react";
+import {
+  Plus,
+  Search,
+  ArrowRight,
+  Database,
+  BarChart3,
+  Columns3,
+  MessageSquare,
+  Sparkles,
+  Clock3,
+  Files,
+} from "lucide-react";
 import { auth } from "@/src/auth";
+import { prisma } from "@/src/lib/prisma";
 import { AppHeader } from "@/components/app/app-header";
 
-const metrics = [
-  {
-    label: "Datasets",
-    value: "0",
-    change: "Nenhum dataset enviado",
-  },
-  {
-    label: "Insights gerados",
-    value: "0",
-    change: "Sem análises ainda",
-  },
-  {
-    label: "Perguntas feitas",
-    value: "0",
-    change: "Chat ainda não utilizado",
-  },
-  {
-    label: "Dashboards",
-    value: "0",
-    change: "Aguardando primeiro upload",
-  },
-];
+function formatNumber(value: number) {
+  return new Intl.NumberFormat("pt-BR").format(value);
+}
+
+function formatDate(value: Date | string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+  }).format(new Date(value));
+}
 
 export default async function DashboardPage() {
   const session = await auth();
 
+  if (!session?.user?.id) {
+    return null;
+  }
+
+  const datasets = await prisma.dataset.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      _count: {
+        select: {
+          columns: true,
+          insights: true,
+          conversations: true,
+        },
+      },
+    },
+  });
+
+  const totalDatasets = datasets.length;
+  const totalRows = datasets.reduce((acc, item) => acc + item.rowCount, 0);
+  const totalColumns = datasets.reduce((acc, item) => acc + item.columnCount, 0);
+  const totalQuestions = datasets.reduce(
+    (acc, item) => acc + item._count.conversations,
+    0
+  );
+  const totalInsights = datasets.reduce(
+    (acc, item) => acc + item._count.insights,
+    0
+  );
+
+  const latestDataset = datasets[0] ?? null;
+
+  const mostQueriedDataset = [...datasets].sort(
+    (a, b) => b._count.conversations - a._count.conversations
+  )[0] ?? null;
+
+  const metrics = [
+    {
+      label: "Datasets enviados",
+      value: formatNumber(totalDatasets),
+      helper:
+        totalDatasets > 0
+          ? "Bases disponíveis para análise"
+          : "Nenhuma base enviada ainda",
+      icon: Database,
+    },
+    {
+      label: "Linhas processadas",
+      value: formatNumber(totalRows),
+      helper:
+        totalRows > 0
+          ? "Registros importados nas análises"
+          : "Aguardando importação de registros",
+      icon: BarChart3,
+    },
+    {
+      label: "Colunas detectadas",
+      value: formatNumber(totalColumns),
+      helper:
+        totalColumns > 0
+          ? "Estrutura identificada automaticamente"
+          : "Sem estrutura detectada ainda",
+      icon: Columns3,
+    },
+    {
+      label: "Interações com IA",
+      value: formatNumber(totalQuestions),
+      helper:
+        totalQuestions > 0
+          ? "Perguntas realizadas nos datasets"
+          : "Nenhuma pergunta feita até agora",
+      icon: MessageSquare,
+    },
+  ];
+
+  const activityItems = [
+    latestDataset
+      ? {
+          title: "Último dataset enviado",
+          description: latestDataset.name,
+          meta: `${formatDate(latestDataset.createdAt)} · ${latestDataset.rowCount} linhas`,
+          href: `/app/dataset/${latestDataset.id}`,
+          icon: Files,
+        }
+      : null,
+    mostQueriedDataset
+      ? {
+          title: "Dataset mais consultado",
+          description: mostQueriedDataset.name,
+          meta: `${mostQueriedDataset._count.conversations} perguntas registradas`,
+          href: `/app/dataset/${mostQueriedDataset.id}`,
+          icon: Sparkles,
+        }
+      : null,
+    {
+      title: "Insights disponíveis",
+      description: `${formatNumber(totalInsights)} insights gerados`,
+      meta: "Observações automáticas já calculadas",
+      href: "/app/insights",
+      icon: Clock3,
+    },
+  ].filter(Boolean) as Array<{
+    title: string;
+    description: string;
+    meta: string;
+    href: string;
+    icon: typeof Files;
+  }>;
+
   return (
     <>
       <AppHeader
-        title={`Olá, ${session?.user?.name ?? "usuário"}`}
-        description="Bem-vinda ao InsightAI. Aqui você vai centralizar datasets, dashboards automáticos, insights e perguntas com IA."
+        title="Painel"
+        description="Visão geral dos seus datasets, métricas e atividade recente."
         action={
           <Link
             href="/app/new"
@@ -45,31 +153,42 @@ export default async function DashboardPage() {
         }
       />
 
-      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {metrics.map((item) => (
-          <div
-            key={item.label}
-            className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <p className="text-sm font-medium text-slate-500">{item.label}</p>
-            <p className="mt-3 text-3xl font-bold text-slate-900">
-              {item.value}
-            </p>
-            <p className="mt-2 text-sm text-slate-400">{item.change}</p>
-          </div>
-        ))}
+      <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {metrics.map((item) => {
+          const Icon = item.icon;
+
+          return (
+            <div
+              key={item.label}
+              className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-slate-500">{item.label}</p>
+                  <p className="mt-3 text-4xl font-bold leading-none text-[#27346b]">
+                    {item.value}
+                  </p>
+                  <p className="mt-3 text-sm font-medium text-slate-500">
+                    {item.helper}
+                  </p>
+                </div>
+
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                  <Icon size={20} />
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </section>
 
-      <section className="mt-8 grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+      <section className="mt-8 grid grid-cols-1 gap-6 xl:grid-cols-[1.35fr_0.65fr]">
         <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="mb-5 flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-semibold text-slate-900">
-                Seus datasets
-              </h2>
+              <h2 className="text-[32px] font-bold text-[#27346b]">Seus datasets</h2>
               <p className="mt-1 text-sm text-slate-500">
-                Visualize os arquivos enviados e acompanhe a evolução das suas
-                análises.
+                Bases mais recentes para exploração, insights e perguntas com IA.
               </p>
             </div>
 
@@ -77,88 +196,121 @@ export default async function DashboardPage() {
               <Search size={16} className="text-slate-400" />
               <input
                 type="text"
-                placeholder="Buscar dataset..."
-                className="w-full bg-transparent px-2 text-sm outline-none placeholder:text-slate-400 md:w-56"
+                disabled
+                placeholder="Buscar..."
+                className="w-40 bg-transparent px-2 text-sm outline-none placeholder:text-slate-400"
               />
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-slate-200">
-            <div className="grid grid-cols-4 bg-slate-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <span>Nome</span>
-              <span>Linhas</span>
-              <span>Upload</span>
-              <span className="text-right">Ações</span>
-            </div>
+          <div className="rounded-[24px] border border-slate-200 bg-slate-50">
+            {datasets.length ? (
+              datasets.map((dataset) => (
+                <div
+                  key={dataset.id}
+                  className="flex items-center justify-between gap-4 border-b border-slate-200 px-5 py-4 last:border-b-0"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-slate-900">
+                      {dataset.name}
+                    </p>
+                    <p className="mt-1 truncate text-sm text-slate-500">
+                      {dataset.fileName}
+                    </p>
+                    <p className="mt-2 text-xs text-slate-400">
+                      {dataset.rowCount} linhas · {dataset.columnCount} colunas ·{" "}
+                      {dataset._count.conversations} perguntas ·{" "}
+                      {formatDate(dataset.createdAt)}
+                    </p>
+                  </div>
 
-            <div className="flex min-h-[220px] flex-col items-center justify-center px-6 py-10 text-center">
-              <div className="rounded-2xl bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700">
-                Nenhum dataset encontrado
+                  <Link
+                    href={`/app/dataset/${dataset.id}`}
+                    className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
+                  >
+                    Abrir
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="px-6 py-10 text-center text-sm text-slate-500">
+                Nenhum dataset encontrado.
               </div>
-              <p className="mt-4 max-w-md text-sm leading-6 text-slate-500">
-                Envie seu primeiro CSV ou Excel para começar a gerar dashboards,
-                KPIs e análises com inteligência artificial.
-              </p>
-
-              <Link
-                href="/app/new"
-                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-              >
-                <Plus size={18} />
-                Enviar primeiro dataset
-              </Link>
-            </div>
+            )}
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-900">
-              Próximos passos
-            </h2>
+            <h2 className="text-xl font-semibold text-slate-900">Resumo</h2>
 
             <div className="mt-5 space-y-4">
-              {[
-                "Enviar um dataset CSV ou XLSX",
-                "Gerar dashboard automático",
-                "Receber insights iniciais",
-                "Explorar dados com perguntas em linguagem natural",
-              ].map((item, index) => (
-                <div
-                  key={item}
-                  className="flex items-start gap-3 rounded-2xl bg-slate-50 p-4"
-                >
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
-                    {index + 1}
-                  </div>
-                  <p className="text-sm leading-6 text-slate-600">{item}</p>
-                </div>
-              ))}
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Datasets</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900">
+                  {formatNumber(totalDatasets)}
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Linhas processadas</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900">
+                  {formatNumber(totalRows)}
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Insights gerados</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900">
+                  {formatNumber(totalInsights)}
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <p className="text-sm text-slate-500">Último upload</p>
+                <p className="mt-2 text-lg font-bold text-slate-900">
+                  {latestDataset
+                    ? formatDate(latestDataset.createdAt)
+                    : "Ainda não há uploads"}
+                </p>
+              </div>
             </div>
           </div>
 
           <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-900">
-              Status do workspace
+              Atividade recente
             </h2>
 
             <div className="mt-5 space-y-4">
-              <div className="rounded-2xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-500">Conta</p>
-                <p className="mt-1 font-semibold text-slate-900">Ativa</p>
-              </div>
+              {activityItems.map((item) => {
+                const Icon = item.icon;
 
-              <div className="rounded-2xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-500">Plano</p>
-                <p className="mt-1 font-semibold text-slate-900">MVP / Local</p>
-              </div>
+                return (
+                  <Link
+                    key={`${item.title}-${item.href}`}
+                    href={item.href}
+                    className="block rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:bg-slate-100"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                        <Icon size={18} />
+                      </div>
 
-              <div className="rounded-2xl border border-slate-200 p-4">
-                <p className="text-sm text-slate-500">Banco</p>
-                <p className="mt-1 font-semibold text-slate-900">
-                  Prisma + Neon
-                </p>
-              </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-slate-900">
+                          {item.title}
+                        </p>
+                        <p className="mt-1 truncate text-sm text-slate-700">
+                          {item.description}
+                        </p>
+                        <p className="mt-2 text-xs text-slate-400">{item.meta}</p>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

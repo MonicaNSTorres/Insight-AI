@@ -381,10 +381,6 @@ export type DatasetColumnUncheckedUpdateManyWithoutDatasetNestedInput = {
   deleteMany?: Prisma.DatasetColumnScalarWhereInput | Prisma.DatasetColumnScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type DatasetColumnCreateWithoutDatasetInput = {
   id?: string
   name: string

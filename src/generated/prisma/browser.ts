@@ -42,3 +42,13 @@ export type Insight = Prisma.InsightModel
  * 
  */
 export type Conversation = Prisma.ConversationModel
+/**
+ * Model DatasetChatSession
+ * 
+ */
+export type DatasetChatSession = Prisma.DatasetChatSessionModel
+/**
+ * Model DatasetChatMessage
+ * 
+ */
+export type DatasetChatMessage = Prisma.DatasetChatMessageModel

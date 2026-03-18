@@ -388,7 +388,9 @@ export const ModelName = {
   Dataset: 'Dataset',
   DatasetColumn: 'DatasetColumn',
   Insight: 'Insight',
-  Conversation: 'Conversation'
+  Conversation: 'Conversation',
+  DatasetChatSession: 'DatasetChatSession',
+  DatasetChatMessage: 'DatasetChatMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "dataset" | "datasetColumn" | "insight" | "conversation"
+    modelProps: "user" | "dataset" | "datasetColumn" | "insight" | "conversation" | "datasetChatSession" | "datasetChatMessage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +780,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DatasetChatSession: {
+      payload: Prisma.$DatasetChatSessionPayload<ExtArgs>
+      fields: Prisma.DatasetChatSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DatasetChatSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DatasetChatSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.DatasetChatSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DatasetChatSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>
+        }
+        findMany: {
+          args: Prisma.DatasetChatSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>[]
+        }
+        create: {
+          args: Prisma.DatasetChatSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>
+        }
+        createMany: {
+          args: Prisma.DatasetChatSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DatasetChatSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.DatasetChatSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>
+        }
+        update: {
+          args: Prisma.DatasetChatSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.DatasetChatSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DatasetChatSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DatasetChatSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.DatasetChatSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.DatasetChatSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDatasetChatSession>
+        }
+        groupBy: {
+          args: Prisma.DatasetChatSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DatasetChatSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DatasetChatSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DatasetChatSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    DatasetChatMessage: {
+      payload: Prisma.$DatasetChatMessagePayload<ExtArgs>
+      fields: Prisma.DatasetChatMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DatasetChatMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DatasetChatMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.DatasetChatMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DatasetChatMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>
+        }
+        findMany: {
+          args: Prisma.DatasetChatMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>[]
+        }
+        create: {
+          args: Prisma.DatasetChatMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>
+        }
+        createMany: {
+          args: Prisma.DatasetChatMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DatasetChatMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.DatasetChatMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>
+        }
+        update: {
+          args: Prisma.DatasetChatMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.DatasetChatMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DatasetChatMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DatasetChatMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.DatasetChatMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DatasetChatMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.DatasetChatMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDatasetChatMessage>
+        }
+        groupBy: {
+          args: Prisma.DatasetChatMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DatasetChatMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DatasetChatMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DatasetChatMessageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -822,6 +972,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  theme: 'theme',
+  language: 'language',
+  notificationsEnabled: 'notificationsEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -880,6 +1033,29 @@ export const ConversationScalarFieldEnum = {
 export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
 
 
+export const DatasetChatSessionScalarFieldEnum = {
+  id: 'id',
+  datasetId: 'datasetId',
+  title: 'title',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DatasetChatSessionScalarFieldEnum = (typeof DatasetChatSessionScalarFieldEnum)[keyof typeof DatasetChatSessionScalarFieldEnum]
+
+
+export const DatasetChatMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  role: 'role',
+  content: 'content',
+  metaJson: 'metaJson',
+  createdAt: 'createdAt'
+} as const
+
+export type DatasetChatMessageScalarFieldEnum = (typeof DatasetChatMessageScalarFieldEnum)[keyof typeof DatasetChatMessageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -911,6 +1087,14 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -918,14 +1102,6 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
-
-
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -945,6 +1121,13 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -1103,6 +1286,8 @@ export type GlobalOmitConfig = {
   datasetColumn?: Prisma.DatasetColumnOmit
   insight?: Prisma.InsightOmit
   conversation?: Prisma.ConversationOmit
+  datasetChatSession?: Prisma.DatasetChatSessionOmit
+  datasetChatMessage?: Prisma.DatasetChatMessageOmit
 }
 
 /* Types for Logging */

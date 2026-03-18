@@ -55,7 +55,9 @@ export const ModelName = {
   Dataset: 'Dataset',
   DatasetColumn: 'DatasetColumn',
   Insight: 'Insight',
-  Conversation: 'Conversation'
+  Conversation: 'Conversation',
+  DatasetChatSession: 'DatasetChatSession',
+  DatasetChatMessage: 'DatasetChatMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -79,6 +81,9 @@ export const UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  theme: 'theme',
+  language: 'language',
+  notificationsEnabled: 'notificationsEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -137,6 +142,29 @@ export const ConversationScalarFieldEnum = {
 export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
 
 
+export const DatasetChatSessionScalarFieldEnum = {
+  id: 'id',
+  datasetId: 'datasetId',
+  title: 'title',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DatasetChatSessionScalarFieldEnum = (typeof DatasetChatSessionScalarFieldEnum)[keyof typeof DatasetChatSessionScalarFieldEnum]
+
+
+export const DatasetChatMessageScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  role: 'role',
+  content: 'content',
+  metaJson: 'metaJson',
+  createdAt: 'createdAt'
+} as const
+
+export type DatasetChatMessageScalarFieldEnum = (typeof DatasetChatMessageScalarFieldEnum)[keyof typeof DatasetChatMessageScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -168,6 +196,14 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -175,12 +211,4 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
-
-
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

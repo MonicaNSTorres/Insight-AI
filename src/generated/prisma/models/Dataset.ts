@@ -252,6 +252,7 @@ export type DatasetWhereInput = {
   columns?: Prisma.DatasetColumnListRelationFilter
   insights?: Prisma.InsightListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
+  chatSessions?: Prisma.DatasetChatSessionListRelationFilter
 }
 
 export type DatasetOrderByWithRelationInput = {
@@ -268,6 +269,7 @@ export type DatasetOrderByWithRelationInput = {
   columns?: Prisma.DatasetColumnOrderByRelationAggregateInput
   insights?: Prisma.InsightOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
+  chatSessions?: Prisma.DatasetChatSessionOrderByRelationAggregateInput
 }
 
 export type DatasetWhereUniqueInput = Prisma.AtLeast<{
@@ -287,6 +289,7 @@ export type DatasetWhereUniqueInput = Prisma.AtLeast<{
   columns?: Prisma.DatasetColumnListRelationFilter
   insights?: Prisma.InsightListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
+  chatSessions?: Prisma.DatasetChatSessionListRelationFilter
 }, "id">
 
 export type DatasetOrderByWithAggregationInput = {
@@ -334,6 +337,7 @@ export type DatasetCreateInput = {
   columns?: Prisma.DatasetColumnCreateNestedManyWithoutDatasetInput
   insights?: Prisma.InsightCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetUncheckedCreateInput = {
@@ -349,6 +353,7 @@ export type DatasetUncheckedCreateInput = {
   columns?: Prisma.DatasetColumnUncheckedCreateNestedManyWithoutDatasetInput
   insights?: Prisma.InsightUncheckedCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetUpdateInput = {
@@ -364,6 +369,7 @@ export type DatasetUpdateInput = {
   columns?: Prisma.DatasetColumnUpdateManyWithoutDatasetNestedInput
   insights?: Prisma.InsightUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetUncheckedUpdateInput = {
@@ -379,6 +385,7 @@ export type DatasetUncheckedUpdateInput = {
   columns?: Prisma.DatasetColumnUncheckedUpdateManyWithoutDatasetNestedInput
   insights?: Prisma.InsightUncheckedUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetCreateManyInput = {
@@ -567,6 +574,20 @@ export type DatasetUpdateOneRequiredWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DatasetUpdateToOneWithWhereWithoutConversationsInput, Prisma.DatasetUpdateWithoutConversationsInput>, Prisma.DatasetUncheckedUpdateWithoutConversationsInput>
 }
 
+export type DatasetCreateNestedOneWithoutChatSessionsInput = {
+  create?: Prisma.XOR<Prisma.DatasetCreateWithoutChatSessionsInput, Prisma.DatasetUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.DatasetCreateOrConnectWithoutChatSessionsInput
+  connect?: Prisma.DatasetWhereUniqueInput
+}
+
+export type DatasetUpdateOneRequiredWithoutChatSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.DatasetCreateWithoutChatSessionsInput, Prisma.DatasetUncheckedCreateWithoutChatSessionsInput>
+  connectOrCreate?: Prisma.DatasetCreateOrConnectWithoutChatSessionsInput
+  upsert?: Prisma.DatasetUpsertWithoutChatSessionsInput
+  connect?: Prisma.DatasetWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DatasetUpdateToOneWithWhereWithoutChatSessionsInput, Prisma.DatasetUpdateWithoutChatSessionsInput>, Prisma.DatasetUncheckedUpdateWithoutChatSessionsInput>
+}
+
 export type DatasetCreateWithoutUserInput = {
   id?: string
   name: string
@@ -579,6 +600,7 @@ export type DatasetCreateWithoutUserInput = {
   columns?: Prisma.DatasetColumnCreateNestedManyWithoutDatasetInput
   insights?: Prisma.InsightCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetUncheckedCreateWithoutUserInput = {
@@ -593,6 +615,7 @@ export type DatasetUncheckedCreateWithoutUserInput = {
   columns?: Prisma.DatasetColumnUncheckedCreateNestedManyWithoutDatasetInput
   insights?: Prisma.InsightUncheckedCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetCreateOrConnectWithoutUserInput = {
@@ -648,6 +671,7 @@ export type DatasetCreateWithoutColumnsInput = {
   user: Prisma.UserCreateNestedOneWithoutDatasetsInput
   insights?: Prisma.InsightCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetUncheckedCreateWithoutColumnsInput = {
@@ -662,6 +686,7 @@ export type DatasetUncheckedCreateWithoutColumnsInput = {
   updatedAt?: Date | string
   insights?: Prisma.InsightUncheckedCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetCreateOrConnectWithoutColumnsInput = {
@@ -692,6 +717,7 @@ export type DatasetUpdateWithoutColumnsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutDatasetsNestedInput
   insights?: Prisma.InsightUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetUncheckedUpdateWithoutColumnsInput = {
@@ -706,6 +732,7 @@ export type DatasetUncheckedUpdateWithoutColumnsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   insights?: Prisma.InsightUncheckedUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetCreateWithoutInsightsInput = {
@@ -720,6 +747,7 @@ export type DatasetCreateWithoutInsightsInput = {
   user: Prisma.UserCreateNestedOneWithoutDatasetsInput
   columns?: Prisma.DatasetColumnCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetUncheckedCreateWithoutInsightsInput = {
@@ -734,6 +762,7 @@ export type DatasetUncheckedCreateWithoutInsightsInput = {
   updatedAt?: Date | string
   columns?: Prisma.DatasetColumnUncheckedCreateNestedManyWithoutDatasetInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetCreateOrConnectWithoutInsightsInput = {
@@ -764,6 +793,7 @@ export type DatasetUpdateWithoutInsightsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutDatasetsNestedInput
   columns?: Prisma.DatasetColumnUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetUncheckedUpdateWithoutInsightsInput = {
@@ -778,6 +808,7 @@ export type DatasetUncheckedUpdateWithoutInsightsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   columns?: Prisma.DatasetColumnUncheckedUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetCreateWithoutConversationsInput = {
@@ -792,6 +823,7 @@ export type DatasetCreateWithoutConversationsInput = {
   user: Prisma.UserCreateNestedOneWithoutDatasetsInput
   columns?: Prisma.DatasetColumnCreateNestedManyWithoutDatasetInput
   insights?: Prisma.InsightCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetUncheckedCreateWithoutConversationsInput = {
@@ -806,6 +838,7 @@ export type DatasetUncheckedCreateWithoutConversationsInput = {
   updatedAt?: Date | string
   columns?: Prisma.DatasetColumnUncheckedCreateNestedManyWithoutDatasetInput
   insights?: Prisma.InsightUncheckedCreateNestedManyWithoutDatasetInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedCreateNestedManyWithoutDatasetInput
 }
 
 export type DatasetCreateOrConnectWithoutConversationsInput = {
@@ -836,6 +869,7 @@ export type DatasetUpdateWithoutConversationsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutDatasetsNestedInput
   columns?: Prisma.DatasetColumnUpdateManyWithoutDatasetNestedInput
   insights?: Prisma.InsightUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetUncheckedUpdateWithoutConversationsInput = {
@@ -850,6 +884,83 @@ export type DatasetUncheckedUpdateWithoutConversationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   columns?: Prisma.DatasetColumnUncheckedUpdateManyWithoutDatasetNestedInput
   insights?: Prisma.InsightUncheckedUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedUpdateManyWithoutDatasetNestedInput
+}
+
+export type DatasetCreateWithoutChatSessionsInput = {
+  id?: string
+  name: string
+  fileName: string
+  rowCount: number
+  columnCount: number
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutDatasetsInput
+  columns?: Prisma.DatasetColumnCreateNestedManyWithoutDatasetInput
+  insights?: Prisma.InsightCreateNestedManyWithoutDatasetInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutDatasetInput
+}
+
+export type DatasetUncheckedCreateWithoutChatSessionsInput = {
+  id?: string
+  userId: string
+  name: string
+  fileName: string
+  rowCount: number
+  columnCount: number
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  columns?: Prisma.DatasetColumnUncheckedCreateNestedManyWithoutDatasetInput
+  insights?: Prisma.InsightUncheckedCreateNestedManyWithoutDatasetInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutDatasetInput
+}
+
+export type DatasetCreateOrConnectWithoutChatSessionsInput = {
+  where: Prisma.DatasetWhereUniqueInput
+  create: Prisma.XOR<Prisma.DatasetCreateWithoutChatSessionsInput, Prisma.DatasetUncheckedCreateWithoutChatSessionsInput>
+}
+
+export type DatasetUpsertWithoutChatSessionsInput = {
+  update: Prisma.XOR<Prisma.DatasetUpdateWithoutChatSessionsInput, Prisma.DatasetUncheckedUpdateWithoutChatSessionsInput>
+  create: Prisma.XOR<Prisma.DatasetCreateWithoutChatSessionsInput, Prisma.DatasetUncheckedCreateWithoutChatSessionsInput>
+  where?: Prisma.DatasetWhereInput
+}
+
+export type DatasetUpdateToOneWithWhereWithoutChatSessionsInput = {
+  where?: Prisma.DatasetWhereInput
+  data: Prisma.XOR<Prisma.DatasetUpdateWithoutChatSessionsInput, Prisma.DatasetUncheckedUpdateWithoutChatSessionsInput>
+}
+
+export type DatasetUpdateWithoutChatSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  rowCount?: Prisma.IntFieldUpdateOperationsInput | number
+  columnCount?: Prisma.IntFieldUpdateOperationsInput | number
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutDatasetsNestedInput
+  columns?: Prisma.DatasetColumnUpdateManyWithoutDatasetNestedInput
+  insights?: Prisma.InsightUpdateManyWithoutDatasetNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutDatasetNestedInput
+}
+
+export type DatasetUncheckedUpdateWithoutChatSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  rowCount?: Prisma.IntFieldUpdateOperationsInput | number
+  columnCount?: Prisma.IntFieldUpdateOperationsInput | number
+  rawJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  columns?: Prisma.DatasetColumnUncheckedUpdateManyWithoutDatasetNestedInput
+  insights?: Prisma.InsightUncheckedUpdateManyWithoutDatasetNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetCreateManyUserInput = {
@@ -875,6 +986,7 @@ export type DatasetUpdateWithoutUserInput = {
   columns?: Prisma.DatasetColumnUpdateManyWithoutDatasetNestedInput
   insights?: Prisma.InsightUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetUncheckedUpdateWithoutUserInput = {
@@ -889,6 +1001,7 @@ export type DatasetUncheckedUpdateWithoutUserInput = {
   columns?: Prisma.DatasetColumnUncheckedUpdateManyWithoutDatasetNestedInput
   insights?: Prisma.InsightUncheckedUpdateManyWithoutDatasetNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutDatasetNestedInput
+  chatSessions?: Prisma.DatasetChatSessionUncheckedUpdateManyWithoutDatasetNestedInput
 }
 
 export type DatasetUncheckedUpdateManyWithoutUserInput = {
@@ -911,12 +1024,14 @@ export type DatasetCountOutputType = {
   columns: number
   insights: number
   conversations: number
+  chatSessions: number
 }
 
 export type DatasetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   columns?: boolean | DatasetCountOutputTypeCountColumnsArgs
   insights?: boolean | DatasetCountOutputTypeCountInsightsArgs
   conversations?: boolean | DatasetCountOutputTypeCountConversationsArgs
+  chatSessions?: boolean | DatasetCountOutputTypeCountChatSessionsArgs
 }
 
 /**
@@ -950,6 +1065,13 @@ export type DatasetCountOutputTypeCountConversationsArgs<ExtArgs extends runtime
   where?: Prisma.ConversationWhereInput
 }
 
+/**
+ * DatasetCountOutputType without action
+ */
+export type DatasetCountOutputTypeCountChatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DatasetChatSessionWhereInput
+}
+
 
 export type DatasetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -965,6 +1087,7 @@ export type DatasetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   columns?: boolean | Prisma.Dataset$columnsArgs<ExtArgs>
   insights?: boolean | Prisma.Dataset$insightsArgs<ExtArgs>
   conversations?: boolean | Prisma.Dataset$conversationsArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.Dataset$chatSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.DatasetCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dataset"]>
 
@@ -1012,6 +1135,7 @@ export type DatasetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   columns?: boolean | Prisma.Dataset$columnsArgs<ExtArgs>
   insights?: boolean | Prisma.Dataset$insightsArgs<ExtArgs>
   conversations?: boolean | Prisma.Dataset$conversationsArgs<ExtArgs>
+  chatSessions?: boolean | Prisma.Dataset$chatSessionsArgs<ExtArgs>
   _count?: boolean | Prisma.DatasetCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DatasetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1028,6 +1152,7 @@ export type $DatasetPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     columns: Prisma.$DatasetColumnPayload<ExtArgs>[]
     insights: Prisma.$InsightPayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
+    chatSessions: Prisma.$DatasetChatSessionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1437,6 +1562,7 @@ export interface Prisma__DatasetClient<T, Null = never, ExtArgs extends runtime.
   columns<T extends Prisma.Dataset$columnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Dataset$columnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DatasetColumnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   insights<T extends Prisma.Dataset$insightsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Dataset$insightsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InsightPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.Dataset$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Dataset$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatSessions<T extends Prisma.Dataset$chatSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Dataset$chatSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DatasetChatSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1945,6 +2071,30 @@ export type Dataset$conversationsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ConversationScalarFieldEnum | Prisma.ConversationScalarFieldEnum[]
+}
+
+/**
+ * Dataset.chatSessions
+ */
+export type Dataset$chatSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DatasetChatSession
+   */
+  select?: Prisma.DatasetChatSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DatasetChatSession
+   */
+  omit?: Prisma.DatasetChatSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DatasetChatSessionInclude<ExtArgs> | null
+  where?: Prisma.DatasetChatSessionWhereInput
+  orderBy?: Prisma.DatasetChatSessionOrderByWithRelationInput | Prisma.DatasetChatSessionOrderByWithRelationInput[]
+  cursor?: Prisma.DatasetChatSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DatasetChatSessionScalarFieldEnum | Prisma.DatasetChatSessionScalarFieldEnum[]
 }
 
 /**

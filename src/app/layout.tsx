@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Asap } from "next/font/google";
+import { AuthSessionProvider } from "@/components/providers/session-provider";
 
 const asap = Asap({
   subsets: ["latin"],
@@ -14,14 +15,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pt-BR">
-      <body
-        className={`${asap.className} antialiased`}
-      >{children}</body>
+      <body className={asap.className}>
+        <AuthSessionProvider>{children}</AuthSessionProvider>
+      </body>
     </html>
   );
 }

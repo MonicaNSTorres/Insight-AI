@@ -41,8 +41,8 @@ export default async function SettingsPage() {
           id: user.id,
           name: user.name ?? "",
           email: user.email ?? "",
-          theme: user.theme ?? "light",
-          language: user.language ?? "pt-BR",
+          theme: "light",
+          language: "pt-BR",
           notificationsEnabled: user.notificationsEnabled ?? true,
         }}
       />

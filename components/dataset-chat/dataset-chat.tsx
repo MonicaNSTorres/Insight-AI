@@ -185,7 +185,7 @@ export function DatasetChat({ datasetId }: { datasetId: string }) {
 
   return (
     <div className="overflow-hidden rounded-[28px] bg-[#05070C] p-5 shadow-[0_24px_60px_rgba(2,6,23,0.28)]">
-      <div className="max-h-[620px] space-y-5 overflow-y-auto pr-2">
+      <div className="max-h-155 space-y-5 overflow-y-auto pr-2">
         {loadingHistory ? (
           <ChatHistorySkeleton />
         ) : (

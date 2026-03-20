@@ -102,7 +102,7 @@ export default function DatasetDetailsLoading() {
                 {Array.from({ length: 9 }).map((_, index) => (
                   <div
                     key={index}
-                    className="flex h-full min-w-[48px] flex-1 flex-col items-center justify-end gap-3"
+                    className="flex h-full min-w-12 flex-1 flex-col items-center justify-end gap-3"
                   >
                     <Skeleton
                       className={`w-full rounded-t-xl ${

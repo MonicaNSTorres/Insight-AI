@@ -177,7 +177,7 @@ export default function HomePage() {
                             {[16, 32, 30, 44, 42, 61, 78, 70].map((height, i) => (
                               <div
                                 key={i}
-                                className="flex-1 rounded-t-md bg-gradient-to-t from-blue-600 to-blue-300"
+                                className="flex-1 rounded-t-md bg-linear-to-t from-blue-600 to-blue-300"
                                 style={{ height: `${height}%` }}
                               />
                             ))}

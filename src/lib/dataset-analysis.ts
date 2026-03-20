@@ -150,6 +150,49 @@ function pickBestTemporal(columns: string[]) {
   );
 }
 
+function buildCountChart(rows: JsonRow[], dimensionColumn: string | null) {
+  if (!dimensionColumn) return [];
+
+  const categoryMap = new Map<string, number>();
+
+  for (const row of rows) {
+    const category = shortenLabel(toLabel(row[dimensionColumn]));
+    categoryMap.set(category, (categoryMap.get(category) ?? 0) + 1);
+  }
+
+  return Array.from(categoryMap.entries())
+    .map(([label, value]) => ({ label, value }))
+    .filter((item) => item.value > 0)
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 6);
+}
+
+function buildTimeChart(rows: JsonRow[], temporalColumn: string | null) {
+  if (!temporalColumn) return [];
+
+  const timelineMap = new Map<string, number>();
+
+  for (const row of rows) {
+    const period = toDateLabel(row[temporalColumn]);
+    timelineMap.set(period, (timelineMap.get(period) ?? 0) + 1);
+  }
+
+  let timelineChart = Array.from(timelineMap.entries())
+    .map(([label, value]) => ({ label, value }))
+    .filter((item) => item.value > 0)
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  if (timelineChart.length > 12) {
+    timelineChart = timelineChart.slice(-12);
+  }
+
+  if (timelineChart.length === 0) {
+    return [];
+  }
+
+  return timelineChart;
+}
+
 export function analyzeDataset(options: {
   rows: JsonRow[];
   metricCandidates: string[];
@@ -164,17 +207,20 @@ export function analyzeDataset(options: {
   const temporalColumn = pickBestTemporal(temporalCandidates);
 
   if (!metricColumn) {
+    const categoryChart = buildCountChart(rows, dimensionColumn);
+    const timelineChart = buildTimeChart(rows, temporalColumn);
+
     return {
-      metricColumn: null,
+      metricColumn: "__count__",
       dimensionColumn,
-      temporalColumn: null,
-      totalValue: 0,
-      averageValue: 0,
-      bestCategory: null,
-      bestCategoryValue: 0,
+      temporalColumn: timelineChart.length ? temporalColumn : null,
+      totalValue: rows.length,
+      averageValue: rows.length > 0 ? 1 : 0,
+      bestCategory: categoryChart[0]?.label ?? null,
+      bestCategoryValue: categoryChart[0]?.value ?? 0,
       totalRows: rows.length,
-      categoryChart: [],
-      timelineChart: [],
+      categoryChart,
+      timelineChart,
     };
   }
 

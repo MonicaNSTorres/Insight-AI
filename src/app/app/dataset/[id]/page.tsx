@@ -154,7 +154,7 @@ export default async function DatasetPage({ params }: PageProps) {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {insights.map((insight, index) => (
+          {insights.insights.map((insight, index) => (
             <div
               key={`${insight.title}-${index}`}
               className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
@@ -261,7 +261,7 @@ export default async function DatasetPage({ params }: PageProps) {
 
             {hasTimelineData ? (
               <div className="overflow-x-auto">
-                <div className="min-w-[720px]">
+                <div className="min-w-180">
                   <div className="flex h-64 items-end gap-4 rounded-2xl bg-slate-50 p-4">
                     {analysis.timelineChart.map((item) => {
                       const maxValue =
@@ -273,18 +273,18 @@ export default async function DatasetPage({ params }: PageProps) {
                       return (
                         <div
                           key={item.label}
-                          className="flex h-full min-w-[48px] flex-1 flex-col items-center gap-3"
+                          className="flex h-full min-w-12 flex-1 flex-col items-center gap-3"
                         >
                           <div className="flex h-full w-full items-end">
                             <div
-                              className="w-full rounded-t-xl bg-gradient-to-t from-blue-600 to-blue-300"
+                              className="w-full rounded-t-xl bg-linear-to-t from-blue-600 to-blue-300"
                               style={{ height }}
                               title={`${item.label}: ${formatNumber(item.value)}`}
                             />
                           </div>
 
                           <span
-                            className="max-w-[72px] truncate text-center text-xs text-slate-500"
+                            className="max-w-18 truncate text-center text-xs text-slate-500"
                             title={item.label}
                           >
                             {item.label}

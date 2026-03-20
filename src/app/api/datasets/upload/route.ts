@@ -3,7 +3,7 @@ import { auth } from "@/src/auth";
 import { prisma } from "@/src/lib/prisma"
 import { parseCsvBuffer } from "@/src/lib/csv-parser";
 import { parseExcelBuffer } from "@/src/lib/excel-parser";
-import { detectDatasetSchema } from "@/src/lib/schema-detector";
+import { detectColumns } from "@/src/lib/schema-detector";
 import type { Prisma } from "@/src/generated/prisma/client";
 
 export const runtime = "nodejs";
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const detectedColumns = detectDatasetSchema(rows, headers);
+    const detectedColumns = detectColumns(rows);
 
     const dataset = await prisma.dataset.create({
       data: {

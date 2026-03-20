@@ -19,15 +19,12 @@ function looksLikeNumber(value: string) {
 
 function looksLikeDate(value: string) {
   const trimmed = value.trim();
-
   if (!trimmed) return false;
 
   const brDate = /^\d{2}\/\d{2}\/\d{4}$/;
   const isoDate = /^\d{4}-\d{2}-\d{2}/;
 
-  if (brDate.test(trimmed) || isoDate.test(trimmed)) {
-    return true;
-  }
+  if (brDate.test(trimmed) || isoDate.test(trimmed)) return true;
 
   const parsed = Date.parse(trimmed);
   return !Number.isNaN(parsed);
@@ -52,73 +49,62 @@ function looksLikeBoolean(value: string) {
 function detectTechnicalType(values: unknown[]): DetectedColumn["detectedType"] {
   const sample = values
     .filter((value) => !isEmpty(value))
-    .slice(0, 30)
+    .slice(0, 50)
     .map((value) => String(value).trim());
 
-  if (sample.length === 0) return "string";
+  if (!sample.length) return "string";
 
-  const allBoolean = sample.every(looksLikeBoolean);
-  if (allBoolean) return "boolean";
+  const booleanRate = sample.filter(looksLikeBoolean).length / sample.length;
+  if (booleanRate > 0.9) return "boolean";
 
-  const allNumber = sample.every(looksLikeNumber);
-  if (allNumber) return "number";
+  const numberRate = sample.filter(looksLikeNumber).length / sample.length;
+  if (numberRate > 0.9) return "number";
 
-  const allDate = sample.every(looksLikeDate);
-  if (allDate) return "date";
+  const dateRate = sample.filter(looksLikeDate).length / sample.length;
+  if (dateRate > 0.8) return "date";
 
   return "string";
 }
 
 function detectSemanticRole(
   columnName: string,
-  detectedType: DetectedColumn["detectedType"]
+  detectedType: DetectedColumn["detectedType"],
+  values: unknown[]
 ): DetectedColumn["semanticRole"] {
   const normalized = columnName.trim().toLowerCase();
 
-  if (!normalized) {
-    return "identifier";
-  }
+  const uniqueValues = new Set(
+    values.filter((v) => !isEmpty(v)).map((v) => String(v))
+  );
+
+  const uniquenessRatio =
+    uniqueValues.size / Math.max(values.length, 1);
 
   if (
     normalized === "id" ||
-    normalized.startsWith("id_") ||
-    normalized.endsWith("_id") ||
+    normalized.includes("id") ||
     normalized.includes("codigo") ||
-    normalized.includes("código") ||
     normalized.includes("cpf") ||
     normalized.includes("cnpj") ||
     normalized.includes("matricula") ||
-    normalized.includes("matrícula") ||
     normalized.includes("chave") ||
     normalized.includes("registro") ||
     normalized.includes("nr_") ||
-    normalized.startsWith("nr")
+    normalized.startsWith("nr") ||
+    uniquenessRatio > 0.9
   ) {
     return "identifier";
   }
 
   if (
-    detectedType === "date" &&
-    !normalized.includes("nascimento")
-  ) {
-    return "temporal";
-  }
-
-  if (
-    (
-      normalized.includes("data") ||
-      normalized.includes("dt_") ||
-      normalized.includes("mes") ||
-      normalized.includes("mês") ||
-      normalized.includes("ano") ||
-      normalized.includes("periodo") ||
-      normalized.includes("período") ||
-      normalized.includes("competencia") ||
-      normalized.includes("competência") ||
-      normalized.includes("referencia") ||
-      normalized.includes("referência")
-    ) &&
-    !normalized.includes("nascimento")
+    detectedType === "date" ||
+    normalized.includes("data") ||
+    normalized.includes("dt_") ||
+    normalized.includes("mes") ||
+    normalized.includes("ano") ||
+    normalized.includes("periodo") ||
+    normalized.includes("competencia") ||
+    normalized.includes("referencia")
   ) {
     return "temporal";
   }
@@ -132,38 +118,40 @@ function detectSemanticRole(
       normalized.includes("faturamento") ||
       normalized.includes("quantidade") ||
       normalized.includes("qtd") ||
-      normalized.includes("qtde") ||
       normalized.includes("preco") ||
-      normalized.includes("preço") ||
       normalized.includes("saldo") ||
       normalized.includes("volume") ||
-      normalized.includes("montante") ||
       normalized.includes("meta") ||
-      normalized.includes("percentual") ||
-      normalized.includes("porcentagem") ||
       normalized.includes("taxa") ||
+      normalized.includes("percentual") ||
       normalized.includes("vl_") ||
-      normalized.startsWith("vl")
+      normalized.startsWith("vl") ||
+      uniquenessRatio < 0.5
     )
   ) {
     return "metric";
   }
 
-  if (detectedType === "number") {
-    return "identifier";
-  }
-
   return "dimension";
 }
 
-export function detectDatasetSchema(
-  rows: Record<string, unknown>[],
-  headers: string[]
+export function detectColumns(
+  rows: Record<string, unknown>[]
 ): DetectedColumn[] {
+  if (!rows.length) return [];
+
+  const headers = Object.keys(rows[0]);
+
   return headers.map((header) => {
     const values = rows.map((row) => row[header]);
+
     const detectedType = detectTechnicalType(values);
-    const semanticRole = detectSemanticRole(header, detectedType);
+
+    const semanticRole = detectSemanticRole(
+      header,
+      detectedType,
+      values
+    );
 
     return {
       name: header,

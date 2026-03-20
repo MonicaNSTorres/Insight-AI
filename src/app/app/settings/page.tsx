@@ -4,6 +4,9 @@ import { auth } from "@/src/auth";
 import { prisma } from "@/src/lib/prisma";
 import { SettingsForm } from "@/components/settings/settings";
 
+type Theme = "light" | "dark";
+type Language = "pt-BR" | "en-US" | "es-ES";
+
 export default async function SettingsPage() {
   const session = await auth();
 
@@ -29,6 +32,15 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
+  const theme: Theme = user.theme === "dark" ? "dark" : "light";
+
+  const language: Language =
+    user.language === "en-US"
+      ? "en-US"
+      : user.language === "es-ES"
+      ? "es-ES"
+      : "pt-BR";
+
   return (
     <>
       <AppHeader
@@ -41,8 +53,8 @@ export default async function SettingsPage() {
           id: user.id,
           name: user.name ?? "",
           email: user.email ?? "",
-          theme: "light",
-          language: "pt-BR",
+          theme,
+          language,
           notificationsEnabled: user.notificationsEnabled ?? true,
         }}
       />

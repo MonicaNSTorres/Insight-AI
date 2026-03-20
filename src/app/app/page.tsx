@@ -14,6 +14,7 @@ import {
 import { auth } from "@/src/auth";
 import { prisma } from "@/src/lib/prisma";
 import { AppHeader } from "@/components/app/app-header";
+import { DatasetRowActions } from "@/components/app/data-row-action";
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("pt-BR").format(value);
@@ -106,21 +107,21 @@ export default async function DashboardPage() {
   const activityItems = [
     latestDataset
       ? {
-          title: "Último dataset enviado",
-          description: latestDataset.name,
-          meta: `${formatDate(latestDataset.createdAt)} · ${latestDataset.rowCount} linhas`,
-          href: `/app/dataset/${latestDataset.id}`,
-          icon: Files,
-        }
+        title: "Último dataset enviado",
+        description: latestDataset.name,
+        meta: `${formatDate(latestDataset.createdAt)} · ${latestDataset.rowCount} linhas`,
+        href: `/app/dataset/${latestDataset.id}`,
+        icon: Files,
+      }
       : null,
     mostQueriedDataset
       ? {
-          title: "Dataset mais consultado",
-          description: mostQueriedDataset.name,
-          meta: `${mostQueriedDataset._count.conversations} perguntas registradas`,
-          href: `/app/dataset/${mostQueriedDataset.id}`,
-          icon: Sparkles,
-        }
+        title: "Dataset mais consultado",
+        description: mostQueriedDataset.name,
+        meta: `${mostQueriedDataset._count.conversations} perguntas registradas`,
+        href: `/app/dataset/${mostQueriedDataset.id}`,
+        icon: Sparkles,
+      }
       : null,
     {
       title: "Insights disponíveis",
@@ -224,13 +225,10 @@ export default async function DashboardPage() {
                     </p>
                   </div>
 
-                  <Link
-                    href={`/app/dataset/${dataset.id}`}
-                    className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-100"
-                  >
-                    Abrir
-                    <ArrowRight size={16} />
-                  </Link>
+                  <DatasetRowActions
+                    datasetId={dataset.id}
+                    datasetName={dataset.name}
+                  />
                 </div>
               ))
             ) : (

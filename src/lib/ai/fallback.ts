@@ -15,6 +15,14 @@ function formatNumber(value: number) {
   }).format(value);
 }
 
+function getMetricLabel(metric?: string, operation?: string) {
+  if (!metric || metric === "__count__") {
+    return operation === "count" ? "registros" : "contagem";
+  }
+
+  return metric;
+}
+
 export function generateFallbackResponse({
   parsed,
   computedAnswer,
@@ -48,16 +56,26 @@ export function generateFallbackResponse({
 
   if (computedAnswer.type === "aggregate_by_dimension") {
     const items = Array.isArray(computedAnswer.items) ? computedAnswer.items : [];
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
+    const operationLabel =
+      computedAnswer.operation === "avg"
+        ? "a média"
+        : computedAnswer.operation === "count"
+        ? "a contagem"
+        : "o total";
 
     if (!items.length) {
       return {
-        answer: `Não encontrei dados suficientes para somar **${computedAnswer.metric}** por **${computedAnswer.dimension}**.`,
+        answer: `Não encontrei dados suficientes para calcular ${operationLabel} de **${metricLabel}** por **${computedAnswer.dimension}**.`,
         confidence: "medium" as const,
         usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
         followUpQuestions: [
-          `Qual ${computedAnswer.dimension} teve maior ${computedAnswer.metric}?`,
-          `Top 5 ${computedAnswer.dimension} por ${computedAnswer.metric}`,
-          `Como ${computedAnswer.metric} evolui no tempo?`,
+          `Qual ${computedAnswer.dimension} teve maior ${metricLabel}?`,
+          `Top 5 ${computedAnswer.dimension} por ${metricLabel}`,
+          `Como ${metricLabel} evolui no tempo?`,
         ],
       };
     }
@@ -71,12 +89,12 @@ export function generateFallbackResponse({
       .join("\n");
 
     return {
-      answer: `Aqui está o total de **${computedAnswer.metric}** por **${computedAnswer.dimension}**:\n\n${ranking}`,
+      answer: `Aqui está ${operationLabel} de **${metricLabel}** por **${computedAnswer.dimension}**:\n\n${ranking}`,
       confidence: "high" as const,
       usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
       followUpQuestions: [
-        `Qual ${computedAnswer.dimension} teve maior ${computedAnswer.metric}?`,
-        `Top 5 ${computedAnswer.dimension} por ${computedAnswer.metric}`,
+        `Qual ${computedAnswer.dimension} teve maior ${metricLabel}?`,
+        `Top 5 ${computedAnswer.dimension} por ${metricLabel}`,
         `Compare os 2 maiores resultados por ${computedAnswer.dimension}`,
       ],
     };
@@ -84,6 +102,10 @@ export function generateFallbackResponse({
 
   if (computedAnswer.type === "max_entity_by_metric") {
     const winner = computedAnswer.winner;
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
 
     if (!winner) {
       return {
@@ -101,19 +123,29 @@ export function generateFallbackResponse({
     return {
       answer: `O maior valor encontrado foi de **${winner.entity}**, com **${formatNumber(
         winner.value
-      )}** na coluna **${computedAnswer.metric}**.`,
+      )}** na coluna **${metricLabel}**.`,
       confidence: "high" as const,
       usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
       followUpQuestions: [
-        `Top 5 ${computedAnswer.dimension} por ${computedAnswer.metric}`,
+        `Top 5 ${computedAnswer.dimension} por ${metricLabel}`,
         `Compare os 2 maiores ${computedAnswer.dimension}`,
-        `Qual categoria teve maior ${computedAnswer.metric}?`,
+        `Qual categoria teve maior ${metricLabel}?`,
       ],
     };
   }
 
   if (computedAnswer.type === "top_n") {
     const items = Array.isArray(computedAnswer.items) ? computedAnswer.items : [];
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
+    const operationLabel =
+      computedAnswer.operation === "avg"
+        ? "média"
+        : computedAnswer.operation === "count"
+        ? "contagem"
+        : "valor";
 
     if (!items.length) {
       return {
@@ -135,11 +167,11 @@ export function generateFallbackResponse({
       .join("\n");
 
     return {
-      answer: `Aqui está o ranking dos principais resultados com base em **${computedAnswer.metric}**:\n\n${ranking}`,
+      answer: `Aqui está o ranking dos principais resultados com base em **${operationLabel}** de **${metricLabel}**:\n\n${ranking}`,
       confidence: "high" as const,
       usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
       followUpQuestions: [
-        `Qual ${computedAnswer.dimension} teve maior ${computedAnswer.metric}?`,
+        `Qual ${computedAnswer.dimension} teve maior ${metricLabel}?`,
         `Compare os 2 melhores ${computedAnswer.dimension}`,
         `Como isso evolui no tempo?`,
       ],
@@ -148,6 +180,16 @@ export function generateFallbackResponse({
 
   if (computedAnswer.type === "max_category") {
     const winner = computedAnswer.winner;
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
+    const operationLabel =
+      computedAnswer.operation === "avg"
+        ? "maior média"
+        : computedAnswer.operation === "count"
+        ? "maior contagem"
+        : "maior resultado";
 
     if (!winner) {
       return {
@@ -163,13 +205,13 @@ export function generateFallbackResponse({
     }
 
     return {
-      answer: `A categoria com maior resultado foi **${winner.name}**, com **${formatNumber(
+      answer: `A categoria com ${operationLabel} foi **${winner.name}**, com **${formatNumber(
         winner.value
-      )}** em **${computedAnswer.metric}**.`,
+      )}** em **${metricLabel}**.`,
       confidence: "high" as const,
       usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
       followUpQuestions: [
-        `Top 5 ${computedAnswer.dimension} por ${computedAnswer.metric}`,
+        `Top 5 ${computedAnswer.dimension} por ${metricLabel}`,
         `Compare as 2 melhores ${computedAnswer.dimension}`,
         `Qual foi a participação dessa categoria no total?`,
       ],
@@ -178,6 +220,10 @@ export function generateFallbackResponse({
 
   if (computedAnswer.type === "growth_by_period") {
     const winner = computedAnswer.winner;
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
 
     if (!winner) {
       return {
@@ -198,13 +244,149 @@ export function generateFallbackResponse({
         : "valor não disponível";
 
     return {
-      answer: `O maior crescimento ocorreu em **${winner.period}**, com variação de **${growthValue}** usando a métrica **${computedAnswer.metric}**.`,
+      answer: `O maior crescimento ocorreu em **${winner.period}**, com variação de **${growthValue}** usando a métrica **${metricLabel}**.`,
       confidence: "high" as const,
       usedColumns: [computedAnswer.temporal, computedAnswer.metric].filter(Boolean),
       followUpQuestions: [
-        `Qual período teve maior ${computedAnswer.metric}?`,
-        `Mostre a evolução de ${computedAnswer.metric} no tempo`,
+        `Qual período teve maior ${metricLabel}?`,
+        `Mostre a evolução de ${metricLabel} no tempo`,
         `Compare os 2 melhores períodos`,
+      ],
+    };
+  }
+
+  if (computedAnswer.type === "compare_groups") {
+    const winner = computedAnswer.winner;
+    const second = computedAnswer.second;
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
+
+    if (!winner || !second) {
+      return {
+        answer:
+          "Não encontrei grupos suficientes para fazer uma comparação confiável.",
+        confidence: "medium" as const,
+        usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
+        followUpQuestions: [
+          `Top 5 ${computedAnswer.dimension}`,
+          `Qual ${computedAnswer.dimension} lidera?`,
+        ],
+      };
+    }
+
+    const diff = winner.value - second.value;
+    const ratio = second.value === 0 ? 0 : diff / second.value;
+
+    return {
+      answer: `Na comparação entre os principais grupos, **${winner.name}** lidera com **${formatNumber(
+        winner.value
+      )}**, enquanto **${second.name}** aparece em seguida com **${formatNumber(
+        second.value
+      )}**. A diferença entre eles é de **${formatNumber(
+        diff
+      )}**, o que representa **${formatNumber(ratio * 100)}%** acima do segundo colocado, considerando **${metricLabel}**.`,
+      confidence: "high" as const,
+      usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
+      followUpQuestions: [
+        `Qual a participação de cada ${computedAnswer.dimension}?`,
+        `Top 5 ${computedAnswer.dimension}`,
+        `Como isso evolui no tempo?`,
+      ],
+    };
+  }
+
+  if (computedAnswer.type === "share_by_dimension") {
+    const items = Array.isArray(computedAnswer.items) ? computedAnswer.items : [];
+
+    if (!items.length) {
+      return {
+        answer: "Não encontrei dados suficientes para calcular a participação por grupo.",
+        confidence: "medium" as const,
+        usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
+        followUpQuestions: [
+          `Qual ${computedAnswer.dimension} lidera?`,
+          `Top 5 ${computedAnswer.dimension}`,
+        ],
+      };
+    }
+
+    const ranking = items
+      .slice(0, 5)
+      .map(
+        (
+          item: { name: string; value: number; share: number },
+          index: number
+        ) =>
+          `${index + 1}. ${item.name} — ${formatNumber(item.value)} (${formatNumber(
+            item.share * 100
+          )}%)`
+      )
+      .join("\n");
+
+    return {
+      answer: `Aqui está a participação dos principais grupos em **${computedAnswer.dimension}**:\n\n${ranking}`,
+      confidence: "high" as const,
+      usedColumns: [computedAnswer.dimension, computedAnswer.metric].filter(Boolean),
+      followUpQuestions: [
+        `Qual ${computedAnswer.dimension} lidera?`,
+        `Compare os 2 maiores grupos`,
+        `Mostre o total por ${computedAnswer.dimension}`,
+      ],
+    };
+  }
+
+  if (computedAnswer.type === "global_aggregate") {
+    const metricLabel = getMetricLabel(
+      computedAnswer.metric,
+      computedAnswer.operation
+    );
+
+    if (computedAnswer.operation === "count") {
+      return {
+        answer: `O dataset possui **${formatNumber(
+          computedAnswer.total
+        )} ${metricLabel}** no total.`,
+        confidence: "high" as const,
+        usedColumns: [computedAnswer.metric],
+        followUpQuestions: [
+          "Quantos registros existem por cliente?",
+          "Quantos registros existem por categoria?",
+          "Top 5 grupos por quantidade",
+        ],
+      };
+    }
+
+    if (computedAnswer.operation === "avg") {
+      return {
+        answer: `A média de **${metricLabel}** no dataset é **${formatNumber(
+          computedAnswer.avg
+        )}**.\n\nForam considerados **${formatNumber(
+          computedAnswer.count
+        )} registros**, com total de **${formatNumber(computedAnswer.total)}**.`,
+        confidence: "high" as const,
+        usedColumns: [computedAnswer.metric],
+        followUpQuestions: [
+          `Qual a média de ${metricLabel} por cliente?`,
+          `Qual a média de ${metricLabel} por categoria?`,
+          `Quem tem a maior média de ${metricLabel}?`,
+        ],
+      };
+    }
+
+    return {
+      answer: `O total de **${metricLabel}** é **${formatNumber(
+        computedAnswer.total
+      )}**.\n\nForam considerados **${formatNumber(
+        computedAnswer.count
+      )} registros** na métrica **${metricLabel}**.`,
+      confidence: "high" as const,
+      usedColumns: [computedAnswer.metric],
+      followUpQuestions: [
+        `Qual o total de ${metricLabel} por cliente?`,
+        `Qual a média de ${metricLabel} por categoria?`,
+        `Top 5 por ${metricLabel}`,
       ],
     };
   }

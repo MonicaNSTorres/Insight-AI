@@ -61,7 +61,7 @@ function detectTechnicalType(values: unknown[]): DetectedColumn["detectedType"] 
   if (numberRate > 0.9) return "number";
 
   const dateRate = sample.filter(looksLikeDate).length / sample.length;
-  if (dateRate > 0.8) return "date";
+  if (dateRate >= 0.6) return "date";
 
   return "string";
 }
@@ -73,12 +73,11 @@ function detectSemanticRole(
 ): DetectedColumn["semanticRole"] {
   const normalized = columnName.trim().toLowerCase();
 
-  const uniqueValues = new Set(
-    values.filter((v) => !isEmpty(v)).map((v) => String(v))
-  );
+  const nonEmptyValues = values.filter((v) => !isEmpty(v));
+  const uniqueValues = new Set(nonEmptyValues.map((v) => String(v)));
 
   const uniquenessRatio =
-    uniqueValues.size / Math.max(values.length, 1);
+    uniqueValues.size / Math.max(nonEmptyValues.length, 1);
 
   if (
     normalized === "id" ||
@@ -91,7 +90,7 @@ function detectSemanticRole(
     normalized.includes("registro") ||
     normalized.includes("nr_") ||
     normalized.startsWith("nr") ||
-    uniquenessRatio > 0.9
+    uniquenessRatio > 0.95
   ) {
     return "identifier";
   }
@@ -104,7 +103,9 @@ function detectSemanticRole(
     normalized.includes("ano") ||
     normalized.includes("periodo") ||
     normalized.includes("competencia") ||
-    normalized.includes("referencia")
+    normalized.includes("referencia") ||
+    normalized.includes("abertura") ||
+    normalized.includes("fechamento")
   ) {
     return "temporal";
   }
@@ -123,10 +124,15 @@ function detectSemanticRole(
       normalized.includes("volume") ||
       normalized.includes("meta") ||
       normalized.includes("taxa") ||
-      normalized.includes("percentual") ||
+      normalized.includes("tempo") ||
+      normalized.includes("hora") ||
+      normalized.includes("horas") ||
+      normalized.includes("duracao") ||
+      normalized.includes("duração") ||
+      normalized.includes("prazo") ||
       normalized.includes("vl_") ||
       normalized.startsWith("vl") ||
-      uniquenessRatio < 0.5
+      uniquenessRatio < 0.7
     )
   ) {
     return "metric";

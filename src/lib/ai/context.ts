@@ -44,6 +44,18 @@ export async function buildDatasetChatContext(datasetId: string) {
     temporalCandidates,
   });
 
+  console.log("CHAT SCHEMA:", {
+  metrics: schema
+    .filter((c) => c.semanticRole === "metric")
+    .map((c) => c.name),
+  dimensions: schema
+    .filter((c) => c.semanticRole === "dimension")
+    .map((c) => c.name),
+  temporals: schema
+    .filter((c) => c.semanticRole === "temporal")
+    .map((c) => c.name),
+});
+
   return {
     dataset: {
       id: dataset.id,

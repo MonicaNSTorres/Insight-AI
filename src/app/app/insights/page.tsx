@@ -29,11 +29,33 @@ function formatDate(value: Date | string) {
   }).format(new Date(value));
 }
 
-export default async function InsightsPage() {
+type InsightsPageProps = {
+  searchParams: Promise<{
+    datasetId?: string;
+  }>;
+};
+
+export default async function InsightsPage({
+  searchParams,
+}: InsightsPageProps) {
   const session = await auth();
   if (!session?.user?.id) return null;
 
+  const { datasetId } = await searchParams;
+
   const insightsList = await prisma.insight.findMany({
+    where: datasetId
+      ? {
+          dataset: {
+            id: datasetId,
+            userId: session.user.id,
+          },
+        }
+      : {
+          dataset: {
+            userId: session.user.id,
+          },
+        },
     orderBy: { createdAt: "desc" },
     take: 12,
     include: {
@@ -53,10 +75,17 @@ export default async function InsightsPage() {
     },
   });
 
-  const dataset = await prisma.dataset.findFirst({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-  });
+  const dataset = datasetId
+    ? await prisma.dataset.findFirst({
+        where: {
+          id: datasetId,
+          userId: session.user.id,
+        },
+      })
+    : await prisma.dataset.findFirst({
+        where: { userId: session.user.id },
+        orderBy: { createdAt: "desc" },
+      });
 
   const rows = (dataset?.rawJson as any[]) || [];
 
@@ -127,7 +156,11 @@ export default async function InsightsPage() {
     <>
       <AppHeader
         title="Insights"
-        description="Análises automáticas e visuais geradas a partir dos seus dados."
+        description={
+          dataset
+            ? `Análises automáticas e visuais geradas a partir do dataset "${dataset.name}".`
+            : "Análises automáticas e visuais geradas a partir dos seus dados."
+        }
         action={
           <Link
             href="/app/new"
